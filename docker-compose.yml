@@ -1,0 +1,36 @@
+
+
+services:
+  demo:
+    build:
+      context: ./demo/target
+      dockerfile: Dockerfile
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://bank:5432/bankSimulator?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: postgres
+      DB_PASSWORD: 12345
+    restart: always
+    depends_on:
+      bank:
+        condition: service_healthy
+
+  bank:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: bankSimulator
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
+
