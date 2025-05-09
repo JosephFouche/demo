@@ -51,6 +51,23 @@ public class User {
     private String phoneNumber;
     private String alternativePhoneNumber;
     private String status;
+    //agregado getter para firstname, lastname y othername, address 05/05/25
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+    public String getOtherName(){
+        return otherName;
+    }
+    public String getAddress(){
+        return address;
+    }
+    public String getEmail(){
+        return email;
+    }
     @CreationTimestamp // Automáticamente establece la fecha y hora en que se creó el registro.
     private LocalDateTime createdAt;
     @UpdateTimestamp // Automáticamente actualiza la fecha y hora cada vez que el registro se

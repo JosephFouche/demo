@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.demo.dto.EmailDetails;
 import com.example.demo.entity.Transaction;
@@ -36,7 +38,7 @@ public class BankStatement {
     private UserRespository userRespository;
     private EmailService emailService;
     private static final String FILE = "///home/hp/Downloads/Bank-Statement-Template-2-TemplateLab.pdf";
-
+    private static final Logger log = LoggerFactory.getLogger(BankStatement.class);//agregado 05/05/25
     /**
      * retrieve list of transactions within a date range given
      * an account number.
@@ -51,10 +53,17 @@ public class BankStatement {
 
         LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        // List<Transaction> transactionList = transactionRepository.findAll().stream()
+        //         .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
+        //         .filter(transaction -> transaction.getCreatedAt().isEqual(start))
+        //         .filter(transaction -> transaction.getCreatedAt().isEqual(end)).toList();
+
         List<Transaction> transactionList = transactionRepository.findAll().stream()
-                .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
-                .filter(transaction -> transaction.getCreatedAt().isEqual(start))
-                .filter(transaction -> transaction.getCreatedAt().isEqual(end)).toList();
+            .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
+            .filter(transaction -> {
+                LocalDate transactionDate = transaction.getCreatedAt().toLocalDate();
+                return (!transactionDate.isBefore(start)) && (!transactionDate.isAfter(end));
+            }).toList();
 
         User user = userRespository.findByAccountNumber(accountNumber);
         String customerName = user.getFirstName() + " " + user.getLastName() + " " + user.getOtherName();

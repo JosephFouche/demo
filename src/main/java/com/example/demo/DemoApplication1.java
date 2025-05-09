@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.info.License;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Project1", contact = @Contact(name = "1234557"), license = @License(name = "Yolo")))
-public class DemoApplication {
+
+public class DemoApplication1 {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(DemoApplication1.class, args);
 	}
 
 }
+

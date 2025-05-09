@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,9 +40,34 @@ public class Transaction {
     private BigDecimal amount;
     private String accountNumber;
     private String status;
+    public String getAccountNumber() {//05/05/25,
+        return accountNumber;
+    }
 
+    public void setAccountNumber(String accountNumber) {//05/05/25,
+        this.accountNumber = accountNumber;
+    }
+
+    public String getTransactionType(){//05/05/25,
+        return transactionType;
+    }
+    public BigDecimal getAmount(){//05/05/25,
+        return amount;
+    }
+    public String getStatus(){//05/05/25,
+        return status;
+    }
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;//lcaldate por localdatetime 05/05/25, puse getter y setter
+ public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
     @UpdateTimestamp
     private LocalDate modifiedAt;
 }

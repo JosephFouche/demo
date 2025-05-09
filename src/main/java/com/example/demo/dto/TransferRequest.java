@@ -1,19 +1,20 @@
 package com.example.demo.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class EmailDetails {
+public class TransferRequest {
 
-    private String recipient;
-    private String messageBody;
-    private String subject;
-    private String attachment;
-
+    private String sourceAccountNumber;
+    private String destinationAccountNumber;
+    private BigDecimal amount;
 }
