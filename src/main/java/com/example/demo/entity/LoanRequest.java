@@ -16,11 +16,25 @@ public class LoanRequest {
 
     private double amount;
 
+    @ManyToOne(optional = false)
+@JoinColumn(name = "customer_id", nullable = false)
+    private Customers customer;
+
     private String status; // Ej: "Pendiente de Aprobación"
+
+    private String rejectionMotive; // solo si es Rechazada
 
     // Getters y Setters
     public Long getId() {
         return id;
+    }
+
+    public Customers getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
     }
 
     public void setId(Long id) {
@@ -58,4 +72,13 @@ public class LoanRequest {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getRejectionMotive() {
+        return rejectionMotive;
+    }
+
+    public void setRejectionMotive(String rejectionMotive) {
+        this.rejectionMotive = rejectionMotive;
+    }
+    
 }
