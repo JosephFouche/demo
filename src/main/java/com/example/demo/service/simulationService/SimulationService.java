@@ -15,7 +15,7 @@ public class SimulationService {
     private InterestTermRepository termRepo;
 
     public SimulationResponse simulate(SimulationRequest request){
-        InterestRate termInterest= termRepo.findByPlazoMeses(request.getMonthTerm())
+        InterestRate termInterest= termRepo.findByMonthTerm(request.getMonthTerm())
                 .orElseThrow(() -> new IllegalArgumentException("Plazo no válido"));
 
         double annualRate = termInterest.getInterestRate();
