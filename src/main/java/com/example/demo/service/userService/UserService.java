@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.userService;
 
 import com.example.demo.dto.BankResponse;
 import com.example.demo.dto.CreditDebitRequest;

@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.userService;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -16,6 +16,8 @@ import com.example.demo.dto.TransferRequest;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRespository;
+import com.example.demo.service.emailService.EmailService;
+import com.example.demo.service.transactionService.TransactionService;
 import com.example.demo.utils.AccountUtils;
 
 @Service

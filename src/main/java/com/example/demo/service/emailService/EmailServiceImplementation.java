@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.emailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +49,7 @@ public class EmailServiceImplementation implements EmailService {
         MimeMessageHelper mimeMessageHelper;
 
         try {
-            mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(senderEmail);
             mimeMessageHelper.setTo(emailDetails.getRecipient());
             mimeMessageHelper.setText(emailDetails.getMessageBody());

@@ -9,7 +9,7 @@ import com.example.demo.dto.CreditDebitRequest;
 import com.example.demo.dto.EnquiryRequest;
 import com.example.demo.dto.TransferRequest;
 import com.example.demo.dto.UserRequest;
-import com.example.demo.service.UserServiceImplementation;
+import com.example.demo.service.userService.UserServiceImplementation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

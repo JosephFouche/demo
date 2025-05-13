@@ -16,6 +16,7 @@ import com.example.demo.entity.Transaction;
 import com.example.demo.entity.User;
 import com.example.demo.repository.TransactionRepository;
 import com.example.demo.repository.UserRespository;
+import com.example.demo.service.emailService.EmailService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -27,32 +28,33 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 
 @Component
 @AllArgsConstructor
-@Slf4j
+
 public class BankStatement {
 
     private TransactionRepository transactionRepository;
     private UserRespository userRespository;
     private EmailService emailService;
-    private static final String FILE = "///home/hp/Downloads/Bank-Statement-Template-2-TemplateLab.pdf";
+    private static final String FILE = "//home/hp/Downloads/Bank-Statement-Template-1-TemplateLab.pdf";
     private static final Logger log = LoggerFactory.getLogger(BankStatement.class);//agregado 05/05/25
     /**
      * retrieve list of transactions within a date range given
      * an account number.
      * 
-     * generate a pdf file of transactions
+     * generate a pdf file of transactionss
      * 
      * send the file via email
      * 
      */
     public List<Transaction> generateStatement(String accountNumber, String startDate, String endDate)
             throws FileNotFoundException, DocumentException {
+                //localDate modificado con.replace 12/05/2025
 
-        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+        LocalDate start = LocalDate.parse(startDate.replace("\"", ""), DateTimeFormatter.ISO_DATE);
+        LocalDate end = LocalDate.parse(endDate.replace("\"", ""), DateTimeFormatter.ISO_DATE);
         // List<Transaction> transactionList = transactionRepository.findAll().stream()
         //         .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
         //         .filter(transaction -> transaction.getCreatedAt().isEqual(start))
