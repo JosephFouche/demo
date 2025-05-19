@@ -15,6 +15,7 @@ public class LoanRequestDTO {
     private String loanType;
     private int term;
     private double amount;
+    private long customerId;//agregado 14/05
 
     //getter y setter
     public String getLoanType() {
@@ -35,7 +36,12 @@ public class LoanRequestDTO {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-
+    public Long getCustomerId() {
+        return customerId;
+    }
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
     
 
 }

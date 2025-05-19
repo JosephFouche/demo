@@ -9,13 +9,21 @@ import com.example.demo.dto.LoanApprovalRequest;
 import com.example.demo.dto.LoanRequestDTO;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
+import com.example.demo.service.CustomerService;
 
 @RestController
 @RequestMapping("/api/loan-request")
 public class LoanRequestController {
 
-    @Autowired
-    private LoanRequestService requestService;
+    private final LoanRequestService requestService;
+    private final CustomerService customerService;
+
+    public LoanRequestController(LoanRequestService requestService, CustomerService customerService) {
+        
+        this.requestService = requestService;
+        this.customerService = customerService;
+    }
+
 
     @PostMapping
     public LoanRequest createRequest(@RequestBody LoanRequestDTO dto) {
@@ -26,4 +34,5 @@ public class LoanRequestController {
         requestService.approveOrReject(request);
         return ResponseEntity.ok("Solicitud procesada");
     }
+    
 }

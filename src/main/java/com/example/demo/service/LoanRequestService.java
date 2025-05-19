@@ -15,6 +15,7 @@ import com.example.demo.entity.LoanRequest;
 import com.example.demo.repository.InterestTermRepository;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.repository.ApprovedLoanRepository;
+import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.FeeRepository;
 
 @Service
@@ -31,16 +32,25 @@ public class LoanRequestService {
 
      @Autowired
     private FeeRepository feeRepo;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
 //👉 Este sirve para que el cliente registre una solicitud de préstamo.
     public LoanRequest createLoanRequest(LoanRequestDTO dto) {
         InterestRate term = interestRepo.findByMonthTerm(dto.getTerm())
             .orElseThrow(() -> new IllegalArgumentException("Plazo no válido"));
 
+        
+    // Buscar al cliente en la base de datos por su ID
+    Customers cliente = customerRepository.findById(dto.getCustomerId())
+        .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));    
+
         LoanRequest request = new LoanRequest();
         request.setLoanType(dto.getLoanType());
         request.setAmount(dto.getAmount());
         request.setTerm(dto.getTerm());
-        request.setCustomer(Cliente);
+        request.setCustomer(cliente);
         request.setStatus("Pendiente de Aprobación");
 
         return requestRepo.save(request);
