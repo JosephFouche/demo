@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.time.LocalDate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ import com.example.demo.entity.InterestRate;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.repository.InterestTermRepository;
 import com.example.demo.repository.LoanRequestRepository;
+
+import jakarta.transaction.Transactional;
+
 import com.example.demo.repository.ApprovedLoanRepository;
 import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.FeeRepository;
@@ -21,6 +26,9 @@ import com.example.demo.repository.FeeRepository;
 @Service
 public class LoanRequestService {
 
+    // ✅ Logger declarado aquí
+    private static final Logger logger = LoggerFactory.getLogger(LoanRequestService.class);
+    
     @Autowired
     private InterestTermRepository interestRepo;
 
@@ -61,30 +69,19 @@ public class LoanRequestService {
         .map(InterestRate::getInterestRate)
             .orElseThrow(() -> new IllegalArgumentException("Plazo no válido o sin tasa configurada"));
     }
-
+ @Transactional
     public void approveOrReject(LoanApprovalRequest request) {
-        LoanRequest solicitud = requestRepo.findById(request.getIdRequest())
-                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
-
-        if (!solicitud.getStatus().equals("Pendiente de Aprobación")) {
-            throw new IllegalStateException("Solicitud ya procesada");
-        }
+        LoanRequest solicitud = getPendingRequest(request.getIdRequest());
 
         if (!request.isApprove()) {
-            if (request.getRejectionMotive() == null || request.getRejectionMotive().isBlank()) {
-                throw new IllegalArgumentException("Debe indicar un motivo de rechazo");
-            }
-            solicitud.setStatus("Rechazada");
-            solicitud.setRejectionMotive(request.getRejectionMotive());
-            requestRepo.save(solicitud);
+            handleRejection(solicitud, request.getRejectionMotive());
             return;
         }
 
-        // Aprobación
+        double tasa = obtainInterestRate(solicitud.getTerm()); // Se obtiene antes del cambio de estado
+
         solicitud.setStatus("Aprobada");
         requestRepo.save(solicitud);
-
-        double tasa = obtainInterestRate(solicitud.getTerm()); // Tu método propio
 
         ApprovedLoan prestamo = new ApprovedLoan();
         prestamo.setCustomer(solicitud.getCustomer());
@@ -93,9 +90,35 @@ public class LoanRequestService {
         prestamo.setTerm(solicitud.getTerm());
         prestamo.setLoanType(solicitud.getLoanType());
         prestamo.setInteresRate(tasa);
-        approvedLoanRepo.save(prestamo);
 
+        approvedLoanRepo.save(prestamo);
         generarCuotas(prestamo);
+
+        logger.info("Préstamo aprobado: solicitudId={}, clienteId={}, monto={}, plazo={}, tasa={}",
+                solicitud.getId(), solicitud.getCustomer().getId(), solicitud.getAmount(), solicitud.getTerm(), tasa);
+    }
+
+    private LoanRequest getPendingRequest(Long id) {
+        LoanRequest solicitud = requestRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
+        if (!"Pendiente de Aprobación".equals(solicitud.getStatus())) {
+            throw new IllegalStateException("Solicitud ya procesada");
+        }
+
+        return solicitud;
+    }
+
+    private void handleRejection(LoanRequest solicitud, String motivo) {
+        if (motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("Debe indicar un motivo de rechazo");
+        }
+
+        solicitud.setStatus("Rechazada");
+        solicitud.setRejectionMotive(motivo);
+        requestRepo.save(solicitud);
+
+        logger.info("Solicitud rechazada: solicitudId={}, motivo={}", solicitud.getId(), motivo);
     }
 
     private void generarCuotas(ApprovedLoan prestamo) {
@@ -107,7 +130,6 @@ public class LoanRequestService {
                               (Math.pow(1 + monthlyFee, term) - 1);
 
         double totalInteres = (cuotaMensual * term) - amount;
-
         double interesMensual = totalInteres / term;
         double capitalMensual = amount / term;
 

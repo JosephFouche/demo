@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,6 +25,8 @@ public class LoanRequest {
     private String status; // Ej: "Pendiente de Aprobación"
 
     private String rejectionMotive; // solo si es Rechazada
+
+    private LocalDate requestDate;//fecha de pedido
 
     // Getters y Setters
     public Long getId() {
@@ -80,5 +84,14 @@ public class LoanRequest {
     public void setRejectionMotive(String rejectionMotive) {
         this.rejectionMotive = rejectionMotive;
     }
+
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
+    
     
 }
