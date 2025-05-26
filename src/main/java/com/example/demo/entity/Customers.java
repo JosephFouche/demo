@@ -21,6 +21,8 @@ public class Customers {
     private String phoneNumber;
     private String documentNumber; // Por ejemplo, cédula o RUC
     private String address;
+      private String username;
+    private String password;
 
     // Getters y Setters
 
@@ -79,4 +81,21 @@ public class Customers {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getUsername() {//agregado 26/05/25
+        return username;
+    }
+
+    public void setUsername(String username) {//agregado 26/05/25
+        this.username = username;
+    }
+
+    public String getPassword() {//agregado 26/05/25
+        return password;
+    }
+
+    public void setPassword(String password) {//agregado 26/05/25
+        this.password = password;
+    }
+    
 }

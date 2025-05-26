@@ -10,21 +10,20 @@ import com.example.demo.dto.LoanDetailed;
 import com.example.demo.dto.LoanRequestDTO;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
+
+import lombok.RequiredArgsConstructor;
+
 import com.example.demo.service.CustomerService;
 
 @RestController
 @RequestMapping("/api/loan-request")
+@RequiredArgsConstructor
 public class LoanRequestController {
 
     private final LoanRequestService requestService;
     private final CustomerService customerService;
 
-    public LoanRequestController(LoanRequestService requestService, CustomerService customerService) {
-        
-        this.requestService = requestService;
-        this.customerService = customerService;
-    }
-
+   
 
     @PostMapping
     public LoanRequest createRequest(@RequestBody LoanRequestDTO dto) {
@@ -44,7 +43,7 @@ public class LoanRequestController {
     @GetMapping("/{loanId}/details")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')") // Asegura token válido y roles
     public ResponseEntity<LoanDetailed> getLoanDetails(@PathVariable Long loanId) {
-        LoanDetailed detalles = loanService.obtenerDetallePrestamo(loanId);
+        LoanDetailed detalles = requestService.obtenerDetallePrestamo(loanId);
         return ResponseEntity.ok(detalles);
     }
     
