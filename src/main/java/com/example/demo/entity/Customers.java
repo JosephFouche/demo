@@ -1,15 +1,18 @@
 package com.example.demo.entity;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "customers")
-public class Customers {
+public class Customers implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -19,12 +22,48 @@ public class Customers {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String documentNumber; // Por ejemplo, cédula o RUC
+    private String documentNumber;
     private String address;
-      private String username;
     private String password;
 
-    // Getters y Setters
+    // Métodos de UserDetails
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList(); // o agregá roles más adelante
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // usamos el email como identificador de login
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    // Getters y setters
 
     public Long getId() {
         return id;
@@ -71,8 +110,7 @@ public class Customers {
     }
 
     public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
+        this.documentNumber = documentNumber;}
 
     public String getAddress() {
         return address;
@@ -82,20 +120,10 @@ public class Customers {
         this.address = address;
     }
 
-    public String getUsername() {//agregado 26/05/25
-        return username;
-    }
-
-    public void setUsername(String username) {//agregado 26/05/25
-        this.username = username;
-    }
-
-    public String getPassword() {//agregado 26/05/25
-        return password;
-    }
-
-    public void setPassword(String password) {//agregado 26/05/25
+    public void setPassword(String password) {
         this.password = password;
     }
-    
+
+
 }
+

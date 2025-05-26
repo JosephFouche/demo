@@ -24,14 +24,8 @@ public class CustomerDetailedService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customers customer = customerRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
-
-        return new org.springframework.security.core.userdetails.User(
-            customer.getUsername(),
-            customer.getPassword(),
-            List.of(new SimpleGrantedAuthority("ROLE_USER"))  // o los roles que correspondan
-        );
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return customerRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
     }
-}
+    }
