@@ -73,6 +73,13 @@ public class ApprovedLoan {
     public void setInteresRate(double interesRate) {
         this.interesRate = interesRate;
     }
+    public List<Fee> getFees() {//agregado el 26/05/25
+        return fees;
+    }
+    public void setFees(List<Fee> fees) {//agregado el 26/05/25
+        this.fees = fees;
+    }
+    
 
     
 }

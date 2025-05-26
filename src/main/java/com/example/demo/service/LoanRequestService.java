@@ -1,19 +1,24 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import com.example.demo.dto.LoanApprovalRequest;
 import com.example.demo.dto.LoanRequestDTO;
+import com.example.demo.dto.LoanDetailed;
 import com.example.demo.entity.ApprovedLoan;
 import com.example.demo.entity.Customers;
 import com.example.demo.entity.Fee;
 import com.example.demo.entity.InterestRate;
 import com.example.demo.entity.LoanRequest;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.InterestTermRepository;
 import com.example.demo.repository.LoanRequestRepository;
 
@@ -145,6 +150,63 @@ public class LoanRequestService {
             feeRepo.save(fee);
         }
     }
+
+
+     public LoanDetailed obtenerDetallePrestamo(Long loanId) {
+        ApprovedLoan loan = approvedLoanRepo.findById(loanId)
+            .orElseThrow(() -> new ResourceNotFoundException("Préstamo no encontrado con ID: " + loanId));
+
+        Customers cliente = loan.getCustomer();
+        List<Fee> cuotas = loan.getFees();
+
+        // Calcular cuotas pagadas y pendientes
+        long cuotasPagadas = cuotas.stream().filter(this::isPaid).count();
+        long cuotasPendientes = cuotas.size() - cuotasPagadas;
+
+        // Calcular próxima fecha de vencimiento
+        LocalDate proximaVencimiento = cuotas.stream()
+            .filter(fee -> !isPaid(fee))
+            .map(Fee::getExpirationDate)
+            .min(Comparator.naturalOrder())
+            .orElse(null);
+
+        String proximaFechaStr = (proximaVencimiento == null) ?
+            "Todas las cuotas están pagadas" :
+            proximaVencimiento.toString();
+
+        // Cálculo de monto total a pagar (suma de totalAmount)
+        BigDecimal montoTotalPagar = cuotas.stream()
+            .map(f -> BigDecimal.valueOf(f.getTotalAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Ganancia obtenida = total intereses
+        BigDecimal gananciaObtenida = cuotas.stream()
+            .map(f -> BigDecimal.valueOf(f.getInterestAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+         // Construir DTO
+    return LoanDetailed.builder()
+        .customerId(cliente.getId())
+        .clientName(cliente.getFirstName() + " " + cliente.getLastName())
+        .approvalDate(loan.getApprovalDate())
+        .amountAsked(loan.getAmount())
+        .totalAmount(montoTotalPagar.doubleValue())
+        .revenueObtained(gananciaObtenida.doubleValue())
+        .term(loan.getTerm())
+        .loanType(loan.getLoanType())
+        .interesRate(loan.getInteresRate())
+        .paidFee((int) cuotasPagadas)
+        .pendingFee((int) cuotasPendientes)
+        .nextFeeExpiration(proximaVencimiento != null ? proximaVencimiento.toString() : "Todas las cuotas están pagadas")
+        .build();
+
+    }
+        
+    private boolean isPaid(Fee fee) {
+           
+            return fee.isPaid();
+        }
 
 
 }

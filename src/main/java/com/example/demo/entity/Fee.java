@@ -23,6 +23,8 @@ public class Fee {
     private double interestAmount;
     private LocalDate expirationDate;
 
+    //agregado el 25/05/25
+    private boolean paid; // "Pagado" o "Pendiente"
 
     // Getters y setters
     public Long getId() {
@@ -61,6 +63,13 @@ public class Fee {
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
+    public boolean isPaid() {
+        return paid;
+    }
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+   
 
     
     
