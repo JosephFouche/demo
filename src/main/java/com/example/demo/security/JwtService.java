@@ -3,6 +3,8 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = "clave-secreta-123"; // 🔒 Cambia esto por algo más seguro
+    @Value("${jwt.secret}")
+    private  String SECRET_KEY;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -58,7 +61,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-            .setSigningKey(SECRET_KEY)
+            .setSigningKey(SECRET_KEY.getBytes())
             .parseClaimsJws(token)
             .getBody();
     }

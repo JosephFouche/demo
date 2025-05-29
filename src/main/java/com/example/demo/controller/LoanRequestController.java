@@ -40,11 +40,12 @@ public class LoanRequestController {
      * Endpoint protegido que devuelve los detalles de un préstamo aprobado.
      * Ejemplo de uso: GET /api/loans/{loanId}/details
      */
+   
     @GetMapping("/{loanId}/details")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')") // Asegura token válido y roles
-    public ResponseEntity<LoanDetailed> getLoanDetails(@PathVariable Long loanId) {
-        LoanDetailed detalles = requestService.obtenerDetallePrestamo(loanId);
-        return ResponseEntity.ok(detalles);
-    }
+@PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
+public ResponseEntity<LoanDetailed> getLoanDetails(@PathVariable Long loanId) {
+    LoanDetailed detalles = requestService.obtenerDetallePrestamo(loanId);
+    return ResponseEntity.ok(detalles);
+}
     
 }

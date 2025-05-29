@@ -4,15 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Collections;
 
 @Entity
 @Table(name = "customers")
-public class Customers implements UserDetails {
+public class Customers {
 
     @Id
     @GeneratedValue
@@ -25,43 +20,7 @@ public class Customers implements UserDetails {
     private String documentNumber;
     private String address;
     private String password;
-
-    // Métodos de UserDetails
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // o agregá roles más adelante
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email; // usamos el email como identificador de login
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    private String username;
 
     // Getters y setters
 
@@ -110,7 +69,8 @@ public class Customers implements UserDetails {
     }
 
     public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;}
+        this.documentNumber = documentNumber;
+    }
 
     public String getAddress() {
         return address;
@@ -120,10 +80,19 @@ public class Customers implements UserDetails {
         this.address = address;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
-

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerRepository extends JpaRepository<Customers, Long>{
    
-    Optional<Customers> findByUsername(String username);
+    //Optional<Customers> findByUsername(String username);
     Optional<Customers> findByEmail(String email);
 
 }
